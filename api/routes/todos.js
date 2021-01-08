@@ -21,10 +21,10 @@ router.post('/', isAuthenticated, (req, res) => {
 });
 
 router.put('/:id', isAuthenticated, (req, res) => {
-    Todos.findOneAndUpdate(req.params.id, req.body).then(x => res.status(200).send({message: 'Success!', data: x }));
+    Todos.findOneAndUpdate(req.params.id, req.body).then(x => res.status(200).send({message: 'Success!', data: req.body }));
 });
 
 router.delete('/:id', isAuthenticated, (req, res) => {
-    Todos.findOneAndDelete(req.params.id, req.body).then(x => res.status(200).send({message: 'Success!', data: x}));
+    Todos.deleteOne({_id: req.params.id}).then(x => res.status(200).send({message: 'Success!', data: x}));
 });
 module.exports = router;
