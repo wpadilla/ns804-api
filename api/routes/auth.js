@@ -20,14 +20,14 @@ router.post('/register', (req, res) => {
             const encryptedPassword = key.toString('base64');
             Users.findOne({ email }).exec().then( (user) => {
                 if(user) {
-                   return res.send('User ya existe');
+                   return res.status(409).send({ message: 'User already exist' });
                 } else {
                     Users.create({
                         email,
                         password: encryptedPassword,
                         salt: newSalt,
                     }).then( (user) => {
-                        return res.send('Usuario creado con exito');
+                        return res.status(201).send({message: 'User created successfully', data: user });
                     })
                 }
             })
@@ -40,23 +40,19 @@ router.post('/login', (req, res) => {
     Users.findOne({email}).exec()
         .then( user => {
             if(!user) {
-                return res.send('Usuario y/o contraseña incorrecto');
+                return res.status(402).send({message: 'User and/or Password Incorrect'});
             }
                 crypto.pbkdf2(password, user.salt, 10000, 64, 'sha1', (err, key) => {
                     const encryptedPassword = key.toString('base64');
 
                     if(user.password === encryptedPassword) {
                         const token = signToken(user._id);
-                        return res.send({token});
+                        return res.status(200).send({token});
                     }
-                    return res.send('Usuario y/o contraseña incorrecto');
+                    return res.status(402).send({message: 'User and/or Password Incorrect'});
                 })
 
         });
-});
-
-router.get('/me', isAuthenticated, (req, res) => {
-    res.send(req.user);
 });
 
 module.exports = router;
