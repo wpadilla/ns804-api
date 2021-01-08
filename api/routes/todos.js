@@ -21,7 +21,7 @@ router.post('/', isAuthenticated, (req, res) => {
 });
 
 router.put('/:id', isAuthenticated, (req, res) => {
-    Todos.findOneAndUpdate(req.params.id, req.body).then(x => res.status(200).send({message: 'Success!', data: req.body }));
+    Todos.updateOne({_id: req.params.id}, req.body).then(x => res.status(200).send({message: 'Success!', data: req.body }));
 });
 
 router.delete('/:id', isAuthenticated, (req, res) => {
